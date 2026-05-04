@@ -210,11 +210,11 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
 </div>
 
 <div class="month-nav">
-  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">139</span></div>
+  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">199</span></div>
   <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb">57</span></div>
   <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb">82</span></div>
-  <div class="m-tab pending" title="Link not received — paste it in chat">Mar 2026 <span class="mb">—</span></div>
-  <div class="m-tab pending" title="Link received — add data when ready">Apr 2026 <span class="mb">—</span></div>
+  <div class="m-tab pending" title="Production data not provided — skipped">Mar 2026 <span class="mb">—</span></div>
+  <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb">60</span></div>
 </div>
 
 <div class="sec-nav">
@@ -338,7 +338,7 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
     <div class="card"><div class="ch"><div><div class="ct">Monthly Revenue</div><div class="cs">Rp juta</div></div></div><div class="cw" style="height:200px"><canvas id="cRev"></canvas></div></div>
     <div class="card"><div class="ch"><div><div class="ct">Avg Ton / Trip</div><div class="cs">Rata-rata per ritase</div></div></div><div class="cw" style="height:200px"><canvas id="cAvg"></canvas></div></div>
   </div>
-  <div class="note-bar">📋 Mar & Apr production sheets pending. Share the tab links in chat to complete all months.</div>
+  <div class="note-bar">📋 Mar 2026 production not provided — skipped. Jan · Feb · Apr shown. Share Mar production tab link to complete the picture.</div>
 </div>
 
 <!-- ══ FUEL ══ -->
@@ -426,8 +426,33 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
       <div class="gh-step"><div class="sno">5</div><div>Wait ~60 seconds → your URL is live! ✅</div></div>
     </div>
 
-    <div class="gh-card">
-      <div class="gh-title">🔄 Updating the Dashboard</div>
+    <div class="gh-card" style="grid-column:1/-1;border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.04)">
+      <div class="gh-title" style="color:var(--green)">🔄 Auto-Update: Dashboard syncs with Google Sheet automatically <span class="gh-badge b-easy">RECOMMENDED SETUP</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div style="font-size:10px;color:var(--green);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:10px">STEP 1 — Publish Sheet as CSV (do this once per tab)</div>
+          <div class="gh-step"><div class="sno">1</div><div>In Google Sheets → <strong>File → Share → Publish to web</strong></div></div>
+          <div class="gh-step"><div class="sno">2</div><div>Select the production tab (e.g. "Production Global April 26") → format: <strong>CSV</strong> → click <strong>Publish</strong></div></div>
+          <div class="gh-step"><div class="sno">3</div><div>Copy the published URL — it looks like:<br><code style="font-size:9px;color:var(--cyan)">docs.google.com/spreadsheets/d/e/…/pub?gid=…&output=csv</code></div></div>
+          <div class="gh-step"><div class="sno">4</div><div>Share those CSV URLs with Claude → I'll update the dashboard to fetch live data on every page load</div></div>
+          <div class="gh-step"><div class="sno">5</div><div>Upload updated <code>index.html</code> to GitHub once — after that, just edit the Sheet and refresh the browser</div></div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--amber);font-family:'Fira Code',monospace;letter-spacing:1px;margin-bottom:10px">HOW IT WORKS AFTER SETUP</div>
+          <div class="code-block">
+            <span class="hl">You (monthly):</span><br>
+            Add new trips to Google Sheet<br><br>
+            <span class="hl">Dashboard (automatic):</span><br>
+            1. User opens GitHub Pages URL<br>
+            2. Dashboard fetches CSV from Sheet<br>
+            3. Parses &amp; renders new data live<br>
+            4. Weather also refreshes automatically<br><br>
+            <span class="hl">Result:</span> Zero work after initial setup ✅
+          </div>
+          <div style="font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:8px">Note: "Publish to web" is different from "Share". It creates a public read-only CSV export that doesn't require login to access.</div>
+        </div>
+      </div>
+    </div>
       <div class="gh-step"><div class="sno">1</div><div>Get updated <code>index.html</code> from Claude (paste new data → regenerate)</div></div>
       <div class="gh-step"><div class="sno">2</div><div>Go to your GitHub repo → find <code>index.html</code> → click the pencil ✏️</div></div>
       <div class="gh-step"><div class="sno">3</div><div>Or use <strong>Add file → Upload files</strong> to overwrite the old one</div></div>
@@ -436,6 +461,41 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
     </div>
 
   </div>
+
+  <div class="gh-card" style="grid-column:1/-1">
+    <div class="gh-title">🔄 Live Auto-Update from Google Sheets <span class="gh-badge b-best">NEXT LEVEL</span></div>
+    <div style="font-size:11px;color:var(--t2);line-height:1.9;font-family:'Fira Code',monospace;margin-bottom:14px">
+      Make the dashboard pull fresh data from your Google Sheet automatically every time someone opens it — no Claude needed for updates.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div style="color:var(--amber);font-size:10px;letter-spacing:1px;margin-bottom:10px;font-family:'Fira Code',monospace">STEP 1 — PUBLISH EACH SHEET TAB AS CSV</div>
+        <div class="gh-step"><div class="sno">1</div><div>In Google Sheets → <strong>File → Share → Publish to web</strong></div></div>
+        <div class="gh-step"><div class="sno">2</div><div>Under <em>Link</em> tab: select the production sheet tab from the dropdown (e.g. "Production Global April 26")</div></div>
+        <div class="gh-step"><div class="sno">3</div><div>Change format from <em>Web page</em> to <strong>Comma-separated values (.csv)</strong></div></div>
+        <div class="gh-step"><div class="sno">4</div><div>Click <strong>Publish</strong> → Copy the URL shown (starts with docs.google.com/spreadsheets/d/e/...)</div></div>
+        <div class="gh-step"><div class="sno">5</div><div>Repeat for each production tab. Paste the URLs in chat and I'll wire them up in the dashboard.</div></div>
+      </div>
+      <div>
+        <div style="color:var(--cyan);font-size:10px;letter-spacing:1px;margin-bottom:10px;font-family:'Fira Code',monospace">HOW IT WORKS AFTER SETUP</div>
+        <div style="font-size:11px;color:var(--t2);line-height:2;font-family:'Fira Code',monospace">
+          <div>✅ Dashboard opens → fetches CSV from Google Sheets</div>
+          <div>✅ New rows in Sheet = new data on dashboard</div>
+          <div>✅ No file upload needed — URL stays the same</div>
+          <div>✅ Updates within ~5 minutes of Sheet changes</div>
+          <div>✅ Falls back to last known data if offline</div>
+          <div style="color:var(--t3);margin-top:8px">Note: Published sheets are publicly readable<br>but not editable — data is safe.</div>
+        </div>
+      </div>
+    </div>
+    <div class="code-block" style="margin-top:12px">
+      Monthly workflow (after live setup):<br>
+      <span class="hl">1.</span> Add new month data to Google Sheet as usual<br>
+      <span class="hl">2.</span> Dashboard auto-fetches it — nothing else needed<br>
+      <span class="hl">3.</span> Share the same GitHub URL with your team — always current
+    </div>
+  </div>
+
 </div>
 
 </div><!-- /main -->
@@ -445,7 +505,7 @@ tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color
 //  CONFIG
 // ══════════════════════════════════════════
 const LAT = -2.35, LON = 104.27;
-const DC = {Darminto:"#f59e0b",Awang:"#22d3ee",Rudi:"#4ade80",Julaikat:"#a78bfa",Riko:"#fb923c",Rahmat:"#34d399",Jhonson:"#f472b6",Kasmadi:"#60a5fa",Deddy:"#facc15",Wayan:"#c084fc"};
+const DC = {Darminto:"#f59e0b",Awang:"#22d3ee",Rudi:"#4ade80",Julaikat:"#a78bfa",Riko:"#fb923c",Rahmat:"#34d399",Jhonson:"#f472b6",Kasmadi:"#60a5fa",Deddy:"#facc15",Wayan:"#c084fc",Irfan:"#2dd4bf"};
 
 // ══════════════════════════════════════════
 //  TRIP DATA
@@ -593,7 +653,69 @@ const FEB=[
   {no:81,month:"Feb",date:"2026-02-28",driver:"Awang",unit:"QBP 02",do_num:"817215",tonase:31.56,rp_per_km_ton:1550,revenue:3326424},
   {no:82,month:"Feb",date:"2026-03-01",driver:"Darminto",unit:"QBP 03",do_num:"818016",tonase:30.03,rp_per_km_ton:1550,revenue:3165162},
 ];
-const ALL_TRIPS=[...JAN,...FEB];
+const APR=[
+  {no:1,month:"Apr",date:"2026-04-01",driver:"Jhonson",unit:"QBP 05",do_num:"853929",tonase:32.47,rp_per_km_ton:1550,revenue:3422338},
+  {no:2,month:"Apr",date:"2026-04-02",driver:"Kasmadi",unit:"QBP 01",do_num:"855187",tonase:29.42,rp_per_km_ton:1550,revenue:3100868},
+  {no:3,month:"Apr",date:"2026-04-02",driver:"Jhonson",unit:"QBP 05",do_num:"855275",tonase:27.95,rp_per_km_ton:1550,revenue:2945930},
+  {no:4,month:"Apr",date:"2026-04-02",driver:"Awang",unit:"QBP 02",do_num:"855491",tonase:31.31,rp_per_km_ton:1550,revenue:3300074},
+  {no:5,month:"Apr",date:"2026-04-03",driver:"Kasmadi",unit:"QBP 01",do_num:"855932",tonase:28.84,rp_per_km_ton:1550,revenue:3039736},
+  {no:6,month:"Apr",date:"2026-04-04",driver:"Julaikat",unit:"QBP 04",do_num:"856441",tonase:32.68,rp_per_km_ton:1550,revenue:3444472},
+  {no:7,month:"Apr",date:"2026-04-04",driver:"Darminto",unit:"QBP 03",do_num:"846513",tonase:30.88,rp_per_km_ton:1550,revenue:3254752},
+  {no:8,month:"Apr",date:"2026-04-04",driver:"Kasmadi",unit:"QBP 01",do_num:"856671",tonase:31.24,rp_per_km_ton:1550,revenue:3292696},
+  {no:9,month:"Apr",date:"2026-04-04",driver:"Jhonson",unit:"QBP 05",do_num:"856690",tonase:31.75,rp_per_km_ton:1550,revenue:3346450},
+  {no:10,month:"Apr",date:"2026-04-04",driver:"Awang",unit:"QBP 02",do_num:"856854",tonase:32.11,rp_per_km_ton:1550,revenue:3384394},
+  {no:11,month:"Apr",date:"2026-04-05",driver:"Kasmadi",unit:"QBP 01",do_num:"858076",tonase:31.23,rp_per_km_ton:1550,revenue:3291642},
+  {no:12,month:"Apr",date:"2026-04-05",driver:"Julaikat",unit:"QBP 04",do_num:"857509",tonase:28.52,rp_per_km_ton:1550,revenue:3006008},
+  {no:13,month:"Apr",date:"2026-04-05",driver:"Jhonson",unit:"QBP 05",do_num:"857992",tonase:31.52,rp_per_km_ton:1550,revenue:3322208},
+  {no:14,month:"Apr",date:"2026-04-06",driver:"Julaikat",unit:"QBP 04",do_num:"858644",tonase:32.18,rp_per_km_ton:1550,revenue:3391772},
+  {no:15,month:"Apr",date:"2026-04-07",driver:"Jhonson",unit:"QBP 05",do_num:"859258",tonase:27.89,rp_per_km_ton:1550,revenue:2939606},
+  {no:16,month:"Apr",date:"2026-04-07",driver:"Kasmadi",unit:"QBP 01",do_num:"859259",tonase:28.82,rp_per_km_ton:1550,revenue:3037628},
+  {no:17,month:"Apr",date:"2026-04-07",driver:"Darminto",unit:"QBP 03",do_num:"859495",tonase:30.04,rp_per_km_ton:1550,revenue:3166216},
+  {no:18,month:"Apr",date:"2026-04-07",driver:"Deddy",unit:"QBP 02",do_num:"859700",tonase:31.43,rp_per_km_ton:1550,revenue:3312722},
+  {no:19,month:"Apr",date:"2026-04-07",driver:"Jhonson",unit:"QBP 05",do_num:"860149",tonase:31.28,rp_per_km_ton:1550,revenue:3296912},
+  {no:20,month:"Apr",date:"2026-04-08",driver:"Deddy",unit:"QBP 02",do_num:"860746",tonase:30.82,rp_per_km_ton:1550,revenue:3248428},
+  {no:21,month:"Apr",date:"2026-04-08",driver:"Kasmadi",unit:"QBP 01",do_num:"860567",tonase:31.17,rp_per_km_ton:1550,revenue:3285318},
+  {no:22,month:"Apr",date:"2026-04-09",driver:"Julaikat",unit:"QBP 04",do_num:"860996",tonase:31.73,rp_per_km_ton:1550,revenue:3344342},
+  {no:23,month:"Apr",date:"2026-04-09",driver:"Darminto",unit:"QBP 03",do_num:"860926",tonase:30.64,rp_per_km_ton:1550,revenue:3229456},
+  {no:24,month:"Apr",date:"2026-04-09",driver:"Jhonson",unit:"QBP 05",do_num:"861243",tonase:30.66,rp_per_km_ton:1550,revenue:3231564},
+  {no:25,month:"Apr",date:"2026-04-09",driver:"Kasmadi",unit:"QBP 01",do_num:"861310",tonase:29.68,rp_per_km_ton:1550,revenue:3128272},
+  {no:26,month:"Apr",date:"2026-04-09",driver:"Julaikat",unit:"QBP 04",do_num:"861483",tonase:31.46,rp_per_km_ton:1550,revenue:3315884},
+  {no:27,month:"Apr",date:"2026-04-09",driver:"Jhonson",unit:"QBP 05",do_num:"861778",tonase:31.34,rp_per_km_ton:1550,revenue:3303236},
+  {no:28,month:"Apr",date:"2026-04-10",driver:"Julaikat",unit:"QBP 04",do_num:"862087",tonase:29.22,rp_per_km_ton:1550,revenue:3079788},
+  {no:29,month:"Apr",date:"2026-04-09",driver:"Deddy",unit:"QBP 02",do_num:"861492",tonase:31.49,rp_per_km_ton:1550,revenue:3319046},
+  {no:30,month:"Apr",date:"2026-04-10",driver:"Kasmadi",unit:"QBP 01",do_num:"870154",tonase:30.05,rp_per_km_ton:1550,revenue:3167270},
+  {no:31,month:"Apr",date:"2026-04-10",driver:"Darminto",unit:"QBP 03",do_num:"862158",tonase:30.41,rp_per_km_ton:1550,revenue:3205214},
+  {no:32,month:"Apr",date:"2026-04-10",driver:"Deddy",unit:"QBP 02",do_num:"870435",tonase:31.10,rp_per_km_ton:1550,revenue:3277940},
+  {no:33,month:"Apr",date:"2026-04-10",driver:"Jhonson",unit:"QBP 05",do_num:"870356",tonase:32.34,rp_per_km_ton:1550,revenue:3408636},
+  {no:34,month:"Apr",date:"2026-04-10",driver:"Julaikat",unit:"QBP 04",do_num:"870445",tonase:31.45,rp_per_km_ton:1550,revenue:3314830},
+  {no:35,month:"Apr",date:"2026-04-12",driver:"Kasmadi",unit:"QBP 01",do_num:"871610",tonase:32.44,rp_per_km_ton:1550,revenue:3419176},
+  {no:36,month:"Apr",date:"2026-04-11",driver:"Julaikat",unit:"QBP 04",do_num:"871140",tonase:31.01,rp_per_km_ton:1550,revenue:3268454},
+  {no:37,month:"Apr",date:"2026-04-12",driver:"Jhonson",unit:"QBP 05",do_num:"871809",tonase:29.47,rp_per_km_ton:1550,revenue:3106138},
+  {no:38,month:"Apr",date:"2026-04-12",driver:"Julaikat",unit:"QBP 04",do_num:"871732",tonase:30.79,rp_per_km_ton:1550,revenue:3245266},
+  {no:39,month:"Apr",date:"2026-04-13",driver:"Kasmadi",unit:"QBP 01",do_num:"872631",tonase:31.47,rp_per_km_ton:1550,revenue:3316938},
+  {no:40,month:"Apr",date:"2026-04-13",driver:"Julaikat",unit:"QBP 04",do_num:"872576",tonase:32.34,rp_per_km_ton:1550,revenue:3408636},
+  {no:41,month:"Apr",date:"2026-04-13",driver:"Jhonson",unit:"QBP 05",do_num:"872923",tonase:31.99,rp_per_km_ton:1550,revenue:3371746},
+  {no:42,month:"Apr",date:"2026-04-13",driver:"Wayan",unit:"QBP 02",do_num:"873574",tonase:31.74,rp_per_km_ton:1550,revenue:3345396},
+  {no:43,month:"Apr",date:"2026-04-13",driver:"Kasmadi",unit:"QBP 01",do_num:"873810",tonase:30.83,rp_per_km_ton:1550,revenue:3249482},
+  {no:44,month:"Apr",date:"2026-04-14",driver:"Jhonson",unit:"QBP 05",do_num:"874000",tonase:33.31,rp_per_km_ton:1550,revenue:3510874},
+  {no:45,month:"Apr",date:"2026-04-15",driver:"Kasmadi",unit:"QBP 01",do_num:"875677",tonase:30.96,rp_per_km_ton:1550,revenue:3263184},
+  {no:46,month:"Apr",date:"2026-04-15",driver:"Wayan",unit:"QBP 02",do_num:"875961",tonase:30.21,rp_per_km_ton:1550,revenue:3184134},
+  {no:47,month:"Apr",date:"2026-04-16",driver:"Jhonson",unit:"QBP 05",do_num:"876318",tonase:32.31,rp_per_km_ton:1550,revenue:3405474},
+  {no:48,month:"Apr",date:"2026-04-16",driver:"Kasmadi",unit:"QBP 01",do_num:"876770",tonase:32.43,rp_per_km_ton:1550,revenue:3418122},
+  {no:49,month:"Apr",date:"2026-04-16",driver:"Julaikat",unit:"QBP 04",do_num:"877208",tonase:31.92,rp_per_km_ton:1550,revenue:3364368},
+  {no:50,month:"Apr",date:"2026-04-17",driver:"Wayan",unit:"QBP 02",do_num:"877717",tonase:30.55,rp_per_km_ton:1550,revenue:3219970},
+  {no:51,month:"Apr",date:"2026-04-17",driver:"Julaikat",unit:"QBP 04",do_num:"878119",tonase:31.90,rp_per_km_ton:1550,revenue:3362260},
+  {no:52,month:"Apr",date:"2026-04-17",driver:"Kasmadi",unit:"QBP 01",do_num:"878194",tonase:30.82,rp_per_km_ton:1550,revenue:3248428},
+  {no:53,month:"Apr",date:"2026-04-18",driver:"Julaikat",unit:"QBP 04",do_num:"878821",tonase:30.44,rp_per_km_ton:1550,revenue:3208376},
+  {no:54,month:"Apr",date:"2026-04-18",driver:"Kasmadi",unit:"QBP 01",do_num:"879468",tonase:31.02,rp_per_km_ton:1550,revenue:3269508},
+  {no:55,month:"Apr",date:"2026-04-19",driver:"Jhonson",unit:"QBP 05",do_num:"879896",tonase:31.63,rp_per_km_ton:1550,revenue:3333802},
+  {no:56,month:"Apr",date:"2026-04-19",driver:"Wayan",unit:"QBP 02",do_num:"880419",tonase:31.93,rp_per_km_ton:1550,revenue:3365422},
+  {no:57,month:"Apr",date:"2026-04-20",driver:"Kasmadi",unit:"QBP 01",do_num:"881112",tonase:31.78,rp_per_km_ton:1550,revenue:3349612},
+  {no:58,month:"Apr",date:"2026-04-20",driver:"Jhonson",unit:"QBP 05",do_num:"881595",tonase:32.33,rp_per_km_ton:1550,revenue:3407582},
+  {no:59,month:"Apr",date:"2026-04-20",driver:"Irfan",unit:"QBP 03",do_num:"882015",tonase:30.54,rp_per_km_ton:1550,revenue:3218916},
+  {no:60,month:"Apr",date:"2026-04-21",driver:"Kasmadi",unit:"QBP 01",do_num:"882772",tonase:31.12,rp_per_km_ton:1550,revenue:3280048},
+];
+const ALL_TRIPS=[...JAN,...FEB,...APR];
 
 // ══════════════════════════════════════════
 //  WEATHER STATE
@@ -610,7 +732,7 @@ async function fetchAllWeather(){
   if(btn){btn.textContent='⟳ Fetching...';btn.disabled=true;}
   try{
     // Historical Jan-Feb 2026
-    const hRes=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&start_date=2026-01-01&end_date=2026-02-28&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=Asia%2FJakarta`);
+    const hRes=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&start_date=2026-01-01&end_date=2026-04-14&daily=precipitation_sum,temperature_2m_max,temperature_2m_min&timezone=Asia%2FJakarta`);
     const hData=await hRes.json();
     if(hData.daily){
       hData.daily.time.forEach((d,i)=>{
@@ -740,7 +862,7 @@ function setSec(s){
 }
 function getFiltered(){
   return ALL_TRIPS.filter(t=>{
-    const mo=activeMo==='all'||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb');
+    const mo=activeMo==='all'||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='apr'&&t.month==='Apr');
     return mo&&(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)&&(!srch_||t.driver.toLowerCase().includes(srch_)||t.unit.toLowerCase().includes(srch_)||t.do_num.includes(srch_));
   });
 }
@@ -760,15 +882,18 @@ function fRp(n){if(n>=1e9)return'Rp '+(n/1e9).toFixed(2)+'M';if(n>=1e6)return'Rp
 function buildKPIs(data){
   const ja=agg(JAN.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
   const fa=agg(FEB.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
+  const aa=agg(APR.filter(t=>(fD==='ALL'||t.driver===fD)&&(fU==='ALL'||t.unit===fU)));
   const cur=agg(data);
-  const tr=(a,b,f)=>{if(activeMo==='all'||!a[f]||!b[f])return'';const p=((b[f]-a[f])/a[f]*100);return`<div class="kpi-trend ${p>0?'up':'dn'}">${p>0?'↑':'↓'}${Math.abs(p).toFixed(1)}%</div>`;};
+  const prevMap={jan:null,feb:ja,apr:fa};
+  const prevM=prevMap[activeMo]||null;
+  const tr=(a,b,f)=>{if(!a||activeMo==='all'||!a[f]||!b[f])return'';const p=((b[f]-a[f])/a[f]*100);return`<div class="kpi-trend ${p>0?'up':'dn'}">${p>0?'↑':'↓'}${Math.abs(p).toFixed(1)}%</div>`;};
   const ks=[
-    {cl:'a',lb:'Total Ritase',val:fN(cur.n),sub:'trips completed',tr:tr(ja,fa,'n')},
-    {cl:'c',lb:'Total Tonase',val:fN(Math.round(cur.ton*10)/10),sub:'metric tons',tr:tr(ja,fa,'ton')},
-    {cl:'a',lb:'Revenue',val:fRp(cur.rev),sub:fN(cur.rev)+' IDR',tr:tr(ja,fa,'rev')},
-    {cl:'g',lb:'Avg Ton/Trip',val:cur.avg.toFixed(2),sub:'tons per ritase',tr:tr(ja,fa,'avg')},
+    {cl:'a',lb:'Total Ritase',val:fN(cur.n),sub:'trips completed',tr:tr(prevM,cur,'n')},
+    {cl:'c',lb:'Total Tonase',val:fN(Math.round(cur.ton*10)/10),sub:'metric tons',tr:tr(prevM,cur,'ton')},
+    {cl:'a',lb:'Revenue',val:fRp(cur.rev),sub:fN(cur.rev)+' IDR',tr:tr(prevM,cur,'rev')},
+    {cl:'g',lb:'Avg Ton/Trip',val:cur.avg.toFixed(2),sub:'tons per ritase',tr:tr(prevM,cur,'avg')},
     {cl:'p',lb:'Active Drivers',val:cur.drivers,sub:'operators',tr:''},
-    {cl:'c',lb:'Rate Rp/Km/Ton',val:activeMo==='jan'?'1,400':activeMo==='feb'?'1,550':'1,400–1,550',sub:activeMo==='feb'?'↑ +10.7% vs Jan':'H2 route · 68 km',tr:''},
+    {cl:'c',lb:'Rate Rp/Km/Ton',val:activeMo==='jan'?'1,400':activeMo==='feb'?'1,550':activeMo==='apr'?'1,550':'1,400–1,550',sub:activeMo==='feb'||activeMo==='apr'?'Rate stabil Feb–Apr':'H2 route · 68 km',tr:''},
     {cl:'b',lb:'Wx Today',val:(WX.current?WX.current.temp+'°C':'—°C'),sub:(WX.current?wxIcon(WX.current.code)+' '+wxTxt(WX.current.code):'Click ⟳ Weather'),tr:''},
   ];
   document.getElementById('kpiRow').innerHTML=ks.map(k=>`<div class="kpi ${k.cl}">${k.tr}<div class="kpi-lbl">${k.lb}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
@@ -804,7 +929,7 @@ function buildDonut(data){
 
 function buildDriverBar(id,field,fmt){
   const dm={};
-  ALL_TRIPS.filter(t=>(activeMo==='all')||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb'))
+  ALL_TRIPS.filter(t=>(activeMo==='all')||(activeMo==='jan'&&t.month==='Jan')||(activeMo==='feb'&&t.month==='Feb')||(activeMo==='apr'&&t.month==='Apr'))
     .filter(t=>fU==='ALL'||t.unit===fU)
     .forEach(t=>{if(!dm[t.driver])dm[t.driver]=0;dm[t.driver]+=t[field];});
   const sorted=Object.entries(dm).sort((a,b)=>b[1]-a[1]);
@@ -816,9 +941,9 @@ function buildDriverCards(data){
   const dm={};data.forEach(t=>{if(!dm[t.driver])dm[t.driver]={n:0,ton:0,rev:0,units:new Set()};dm[t.driver].n++;dm[t.driver].ton+=t.tonase;dm[t.driver].rev+=t.revenue;dm[t.driver].units.add(t.unit);});
   const sorted=Object.entries(dm).sort((a,b)=>b[1].ton-a[1].ton);
   const maxT=Math.max(...sorted.map(d=>d[1].ton));
-  const inJ=new Set(JAN.map(t=>t.driver)),inF=new Set(FEB.map(t=>t.driver));
+  const inJ=new Set(JAN.map(t=>t.driver)),inF=new Set(FEB.map(t=>t.driver)),inA=new Set(APR.map(t=>t.driver));
   document.getElementById('dCards').innerHTML=sorted.map(([name,d])=>{
-    const isNew=!inJ.has(name)&&inF.has(name);
+    const isNew=(!inJ.has(name)&&inF.has(name))||(!inJ.has(name)&&!inF.has(name)&&inA.has(name));
     return`<div class="dc" onclick="setChip('d','${name}')">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div><div class="dn2" style="color:${DC[name]||'#fff'}">${name}</div><div class="du">${[...d.units].join(', ')}</div></div>
@@ -843,7 +968,7 @@ function buildTable(data){
     const d=new Date(t.date),rain=WX.historical[t.date]?.rain||0,rainy=rain>=5;
     return`<tr class="${rainy?'rainy':''}">
       <td style="color:var(--t3)">${t.no}</td>
-      <td><span style="background:${t.month==='Jan'?'var(--amberd)':'var(--cyand)'};color:${t.month==='Jan'?'var(--amber)':'var(--cyan)'};padding:1px 5px;border-radius:3px;font-size:8px">${t.month}</span></td>
+      <td><span style="background:${t.month==='Jan'?'var(--amberd)':t.month==='Feb'?'var(--cyand)':'var(--purpled)'};color:${t.month==='Jan'?'var(--amber)':t.month==='Feb'?'var(--cyan)':'var(--purple)'};padding:1px 5px;border-radius:3px;font-size:8px">${t.month}</span></td>
       <td>${d.getDate()}/${d.getMonth()+1}/26</td>
       <td style="color:${DC[t.driver]||'#fff'};font-weight:500">${t.driver}</td>
       <td><span class="tdu">${t.unit}</span></td>
@@ -860,29 +985,38 @@ window.srt=col=>{if(srt_===col)srtD*=-1;else{srt_=col;srtD=1;}buildTable(getFilt
 window.onSrch=()=>{srch_=document.getElementById('tblSrch').value.toLowerCase();pg_=1;buildTable(getFiltered());};
 
 function buildCompare(){
-  const ja=agg(JAN),fa=agg(FEB);
+  const ja=agg(JAN),fa=agg(FEB),aa=agg(APR);
+  const pct=(a,b)=>a?((b-a)/a*100).toFixed(1):'—';
   const items=[
-    {lb:'Ritase',jv:ja.n,fv:fa.n,pct:((fa.n-ja.n)/ja.n*100).toFixed(1),fmt:v=>fN(v)},
-    {lb:'Tonase',jv:+ja.ton.toFixed(0),fv:+fa.ton.toFixed(0),pct:((fa.ton-ja.ton)/ja.ton*100).toFixed(1),fmt:v=>v+'t'},
-    {lb:'Revenue',jv:fRp(ja.rev),fv:fRp(fa.rev),pct:((fa.rev-ja.rev)/ja.rev*100).toFixed(1),fmt:v=>v},
-    {lb:'Rate/Km/Ton',jv:'1,400',fv:'1,550',pct:'+10.7',fmt:v=>'Rp '+v},
-    {lb:'Avg Ton/Trip',jv:+ja.avg.toFixed(2),fv:+fa.avg.toFixed(2),pct:((fa.avg-ja.avg)/ja.avg*100).toFixed(1),fmt:v=>v+'t'},
+    {lb:'Ritase',jv:ja.n,fv:fa.n,av:aa.n,fmt:v=>fN(v)+' trips'},
+    {lb:'Tonase',jv:+ja.ton.toFixed(0),fv:+fa.ton.toFixed(0),av:+aa.ton.toFixed(0),fmt:v=>fN(v)+'t'},
+    {lb:'Revenue',jv:fRp(ja.rev),fv:fRp(fa.rev),av:fRp(aa.rev),fmt:v=>v},
+    {lb:'Rate/Km/Ton',jv:'1,400',fv:'1,550',av:'1,550',fmt:v=>'Rp '+v},
+    {lb:'Avg Ton/Trip',jv:+ja.avg.toFixed(2),fv:+fa.avg.toFixed(2),av:+aa.avg.toFixed(2),fmt:v=>v+'t'},
   ];
-  document.getElementById('cmpBanner').innerHTML=items.map(item=>`
-    <div class="cmp-item">
+  document.getElementById('cmpBanner').innerHTML=items.map(item=>{
+    const febPct=pct(typeof item.jv==='number'?item.jv:null,typeof item.fv==='number'?item.fv:null);
+    const aprPct=pct(typeof item.fv==='number'?item.fv:null,typeof item.av==='number'?item.av:null);
+    return`<div class="cmp-item">
       <div class="cmp-pill"><div class="cv">${typeof item.jv==='number'?fN(item.jv):item.jv}</div><div class="cl">JAN</div></div>
-      <div><div style="text-align:center;font-size:16px;color:var(--t3)">→</div>
-        <div class="cmp-chg"><div class="cc" style="color:${parseFloat(item.pct)>0?'var(--green)':'var(--red)'}">${item.pct>0?'+':''}${item.pct}%</div><div class="ck">${item.lb}</div></div>
+      <div><div style="text-align:center;font-size:14px;color:var(--t3)">→</div>
+        <div class="cmp-chg"><div class="cc" style="color:${parseFloat(febPct)>0?'var(--green)':'var(--red)'}">${febPct>0?'+':''}${febPct}%</div><div class="ck">Jan→Feb</div></div>
       </div>
       <div class="cmp-pill"><div class="cv">${typeof item.fv==='number'?fN(item.fv):item.fv}</div><div class="cl">FEB</div></div>
-    </div><div class="cdiv"></div>`).join('');
-  const months=['Jan 2026','Feb 2026'];
-  const jc='rgba(245,158,11,.7)',fc='rgba(34,211,238,.7)';
-  const mk=(id,vals,cb)=>{if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type:'bar',data:{labels:months,datasets:[{data:vals,backgroundColor:[jc,fc],borderColor:['#f59e0b','#22d3ee'],borderWidth:1,borderRadius:4}]},options:{...BASE,plugins:{...BASE.plugins,tooltip:{...BASE.plugins.tooltip,callbacks:{label:i=>cb(i.raw)}}}}});}
-  mk('cTrip',[ja.n,fa.n],v=>v+' trips');
-  mk('cTon',[+ja.ton.toFixed(0),+fa.ton.toFixed(0)],v=>fN(v)+'t');
-  mk('cRev',[+(ja.rev/1e6).toFixed(1),+(fa.rev/1e6).toFixed(1)],v=>'Rp '+v+'Jt');
-  mk('cAvg',[+ja.avg.toFixed(2),+fa.avg.toFixed(2)],v=>v+'t');
+      <div><div style="text-align:center;font-size:14px;color:var(--t3)">→</div>
+        <div class="cmp-chg"><div class="cc" style="color:${parseFloat(aprPct)>0?'var(--green)':'var(--red)'}">${aprPct>0?'+':''}${aprPct}%</div><div class="ck">Feb→Apr</div></div>
+      </div>
+      <div class="cmp-pill"><div class="cv">${typeof item.av==='number'?fN(item.av):item.av}</div><div class="cl">APR</div></div>
+    </div><div class="cdiv"></div>`;
+  }).join('');
+  const months=['Jan','Feb','Apr'];
+  const colors=['rgba(245,158,11,.7)','rgba(34,211,238,.7)','rgba(167,139,250,.7)'];
+  const borders=['#f59e0b','#22d3ee','#a78bfa'];
+  const mk=(id,vals,cb)=>{if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id).getContext('2d'),{type:'bar',data:{labels:months,datasets:[{data:vals,backgroundColor:colors,borderColor:borders,borderWidth:1,borderRadius:4}]},options:{...BASE,plugins:{...BASE.plugins,tooltip:{...BASE.plugins.tooltip,callbacks:{label:i=>cb(i.raw)}}}}});}
+  mk('cTrip',[ja.n,fa.n,aa.n],v=>v+' trips');
+  mk('cTon',[+ja.ton.toFixed(0),+fa.ton.toFixed(0),+aa.ton.toFixed(0)],v=>fN(v)+'t');
+  mk('cRev',[+(ja.rev/1e6).toFixed(1),+(fa.rev/1e6).toFixed(1),+(aa.rev/1e6).toFixed(1)],v=>'Rp '+v+'Jt');
+  mk('cAvg',[+ja.avg.toFixed(2),+fa.avg.toFixed(2),+aa.avg.toFixed(2)],v=>v+'t');
 }
 
 function buildFuel(){
