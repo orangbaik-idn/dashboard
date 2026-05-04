@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>QBP Operations Dashboard 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0b0e13;--s1:#131820;--s2:#1a2130;--s3:#212d3d;--border:#253040;--border2:#2e3d52;
+  --amber:#f59e0b;--amberd:rgba(245,158,11,.12);--amber2:#fbbf24;
+  --cyan:#22d3ee;--cyand:rgba(34,211,238,.1);
+  --green:#4ade80;--greend:rgba(74,222,128,.1);
+  --purple:#a78bfa;--purpled:rgba(167,139,250,.1);
+  --red:#f87171;--orange:#fb923c;--blue:#60a5fa;--blued:rgba(96,165,250,.1);
+  --t1:#e8edf5;--t2:#94a3b8;--t3:#64748b;--t4:#3d5068;--r:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{background:var(--s1);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:200;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-badge{background:var(--amber);color:#000;font-family:'Oswald',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;padding:3px 8px;}
+.logo-text{font-family:'Oswald',sans-serif;font-size:16px;font-weight:500;letter-spacing:.8px;}
+.logo-sub{font-size:9px;color:var(--t3);margin-top:1px;}
+.top-right{display:flex;align-items:center;gap:12px;}
+.weather-widget{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:6px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:.15s;}
+.weather-widget:hover{border-color:var(--blue);}
+.wx-icon{font-size:18px;}
+.wx-temp{font-family:'Oswald',sans-serif;font-size:16px;color:#fff;}
+.wx-info{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;line-height:1.4;}
+.wx-rain{color:var(--blue);}
+.dot-live{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--green);font-family:'Fira Code',monospace;}
+.dot-live span{width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.refresh-btn{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:10px;padding:5px 10px;border-radius:4px;cursor:pointer;font-family:'Fira Code',monospace;transition:.15s;}
+.refresh-btn:hover{border-color:var(--amber);color:var(--amber);}
+
+/* TABS */
+.month-nav{background:var(--s1);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:2px;}
+.m-tab{padding:11px 16px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;text-transform:uppercase;white-space:nowrap;}
+.m-tab:hover{color:var(--t2);}
+.m-tab.active{color:var(--amber);border-bottom-color:var(--amber);}
+.m-tab .mb{font-size:8px;font-family:'Fira Code',monospace;margin-left:5px;background:var(--s3);color:var(--t3);padding:1px 4px;border-radius:10px;vertical-align:middle;}
+.m-tab.active .mb{background:var(--amberd);color:var(--amber);}
+.m-tab.pending{opacity:.4;cursor:not-allowed;font-style:italic;}
+.sec-nav{background:var(--s2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:1px;}
+.sec-tab{padding:7px 14px;font-size:10px;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;font-family:'Fira Code',monospace;letter-spacing:.5px;}
+.sec-tab:hover{color:var(--t2);}
+.sec-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+
+/* FILTERS */
+.filters{background:var(--s1);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.fl{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;}
+.chip{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:9px;padding:3px 9px;border-radius:20px;cursor:pointer;transition:.12s;font-family:'Fira Code',monospace;}
+.chip:hover{border-color:var(--amber);color:var(--amber);}
+.chip.active{background:var(--amberd);border-color:var(--amber);color:var(--amber);}
+.fdiv{width:1px;height:16px;background:var(--border);}
+
+/* MAIN */
+.main{padding:16px 24px;display:flex;flex-direction:column;gap:14px;}
+.view{display:none;flex-direction:column;gap:14px;}
+.view.active{display:flex;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;position:relative;overflow:hidden;transition:.2s;}
+.kpi:hover{border-color:var(--amber);}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.a::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.kpi.c::before{background:linear-gradient(90deg,var(--cyan),transparent);}
+.kpi.g::before{background:linear-gradient(90deg,var(--green),transparent);}
+.kpi.p::before{background:linear-gradient(90deg,var(--purple),transparent);}
+.kpi.b::before{background:linear-gradient(90deg,var(--blue),transparent);}
+.kpi.o::before{background:linear-gradient(90deg,var(--orange),transparent);}
+.kpi-lbl{font-size:8px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;font-family:'Fira Code',monospace;margin-bottom:5px;}
+.kpi-val{font-family:'Oswald',sans-serif;font-size:26px;font-weight:600;line-height:1;color:#fff;}
+.kpi-sub{font-size:9px;color:var(--t3);margin-top:4px;font-family:'Fira Code',monospace;}
+.kpi-trend{position:absolute;top:12px;right:12px;font-size:10px;font-family:'Fira Code',monospace;font-weight:500;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* CARDS */
+.g2{display:grid;gap:12px;}
+.g2-main{grid-template-columns:2.2fr 1fr;}
+.g2-half{grid-template-columns:1fr 1fr;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.ct{font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
+.cs{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:2px;letter-spacing:.3px;}
+.cw{position:relative;}
+
+/* DRIVER CARDS */
+.dgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.dc{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:11px;cursor:pointer;transition:.15s;}
+.dc:hover,.dc.active{border-color:var(--amber);background:var(--amberd);}
+.dn2{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;}
+.du{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.dbv{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;margin-top:8px;}
+.dbl{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;}
+.dbg{background:var(--border);height:2px;border-radius:1px;margin-top:6px;}
+.dbf{height:100%;border-radius:1px;}
+.dbadge{font-size:7px;font-family:'Fira Code',monospace;padding:1px 4px;border-radius:3px;display:inline-block;margin-top:3px;}
+.new{background:var(--cyand);color:var(--cyan);}
+.act{background:var(--greend);color:var(--green);}
+
+/* TABLE */
+.tw{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.th{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.tsrch{background:var(--s2);border:1px solid var(--border);color:var(--t1);font-family:'Fira Code',monospace;font-size:10px;padding:5px 10px;border-radius:4px;width:190px;outline:none;}
+.tsrch:focus{border-color:var(--amber);}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--s2);padding:8px 12px;text-align:left;font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;letter-spacing:1.2px;text-transform:uppercase;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none;}
+thead th:hover{color:var(--amber);}
+tbody tr{border-bottom:1px solid rgba(37,48,64,.5);transition:.08s;}
+tbody tr:hover{background:rgba(245,158,11,.03);}
+tbody tr.rainy{background:rgba(96,165,250,.04);}
+tbody td{padding:7px 12px;font-size:10px;font-family:'Fira Code',monospace;color:var(--t2);white-space:nowrap;}
+.td-ton{color:var(--cyan);}
+.td-rev{color:var(--amber);}
+.tdu{background:var(--s2);color:var(--t3);padding:1px 6px;border-radius:3px;font-size:8px;display:inline-block;}
+.pgn{padding:9px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.pi{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;}
+.pbs{display:flex;gap:3px;}
+.pb{background:var(--s2);border:1px solid var(--border);color:var(--t2);font-size:9px;padding:3px 9px;border-radius:3px;cursor:pointer;font-family:'Fira Code',monospace;transition:.1s;}
+.pb:hover,.pb.active{border-color:var(--amber);color:var(--amber);}
+.pb:disabled{opacity:.3;cursor:default;}
+
+/* WEATHER VIEW */
+.wx-forecast{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.wx-day{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;}
+.wx-day-name{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;}
+.wx-day-icon{font-size:26px;margin:8px 0;}
+.wx-day-temp{font-family:'Oswald',sans-serif;font-size:18px;color:#fff;}
+.wx-day-rain{font-size:9px;color:var(--blue);font-family:'Fira Code',monospace;margin-top:4px;}
+.wx-day-prob{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.wx-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.wx-stat{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.wx-stat-lbl{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.wx-stat-val{font-family:'Oswald',sans-serif;font-size:22px;color:#fff;}
+.wx-stat-sub{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:3px;}
+.corr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.corr-card{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.corr-type{font-size:9px;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.corr-val{font-family:'Oswald',sans-serif;font-size:20px;color:#fff;}
+.corr-sub{font-size:9px;color:var(--t3);font-family:'Fira Code',monospace;margin-top:3px;}
+.loading-wx{display:flex;align-items:center;gap:10px;padding:20px;color:var(--t3);font-family:'Fira Code',monospace;font-size:11px;}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* COMPARE */
+.cmp-banner{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 18px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.cmp-item{display:flex;align-items:center;gap:8px;}
+.cmp-pill{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:5px 12px;text-align:center;}
+.cmp-pill .cv{font-family:'Oswald',sans-serif;font-size:20px;color:#fff;}
+.cmp-pill .cl{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.cmp-chg{text-align:center;}
+.cmp-chg .cc{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;}
+.cmp-chg .ck{font-size:8px;color:var(--t3);font-family:'Fira Code',monospace;}
+.cdiv{width:1px;height:36px;background:var(--border);}
+
+/* GITHUB GUIDE */
+.gh-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.gh-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.gh-title{font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.gh-badge{font-size:8px;padding:2px 6px;border-radius:3px;font-family:'Fira Code',monospace;}
+.b-easy{background:var(--greend);color:var(--green);}
+.b-best{background:var(--amberd);color:var(--amber);}
+.gh-step{display:flex;gap:8px;margin-bottom:10px;font-size:11px;color:var(--t2);line-height:1.5;}
+.sno{min-width:20px;height:20px;background:var(--s3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'Fira Code',monospace;color:var(--amber);flex-shrink:0;margin-top:1px;}
+.code-block{background:var(--s2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;font-family:'Fira Code',monospace;font-size:10px;color:var(--cyan);margin-top:10px;line-height:1.8;word-break:break-all;}
+.code-block .hl{color:var(--amber);}
+.note-bar{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:4px;padding:9px 14px;font-size:10px;color:var(--blue);font-family:'Fira Code',monospace;display:flex;align-items:center;gap:8px;}
+.sec-h{font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--t3);padding-left:8px;border-left:2px solid var(--amber);margin-bottom:8px;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--amber);}
+
+@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(4,1fr);}.dgrid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){.main{padding:12px;}.kpi-row{grid-template-columns:repeat(2,1fr);}.g2-main,.g2-half,.g3,.g4{grid-template-columns:1fr;}.dgrid{grid-template-columns:repeat(2,1fr);}.gh-grid{grid-template-columns:1fr;}.wx-forecast{grid-template-columns:repeat(3,1fr);}.wx-stat-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div><div class="logo-badge">QBP</div></div>
+    <div><div class="logo-text">Operations Dashboard 2026</div><div class="logo-sub">PT QBP · Bayung Lencir, Muba · ISP 68–SBL · H2 · 68 km</div></div>
+  </div>
+  <div class="top-right">
+    <div class="weather-widget" onclick="setSec('weather')" title="Click for weather detail">
+      <div class="wx-icon" id="wxIcon">⏳</div>
+      <div>
+        <div class="wx-temp" id="wxTemp">—°C</div>
+        <div class="wx-info"><span id="wxCond">Loading weather...</span></div>
+        <div class="wx-info wx-rain" id="wxRain">Bayung Lencir</div>
+      </div>
+    </div>
+    <div class="dot-live"><span></span>LIVE</div>
+    <button class="refresh-btn" onclick="fetchAllWeather()">⟳ Weather</button>
+  </div>
+</div>
+
+<div class="month-nav">
+  <div class="m-tab active" data-m="all" onclick="setMonth('all')">All <span class="mb" id="mb-all">199</span></div>
+  <div class="m-tab" data-m="jan" onclick="setMonth('jan')">Jan 2026 <span class="mb">57</span></div>
+  <div class="m-tab" data-m="feb" onclick="setMonth('feb')">Feb 2026 <span class="mb">82</span></div>
+  <div class="m-tab pending" title="Production data not provided — skipped">Mar 2026 <span class="mb">—</span></div>
+  <div class="m-tab" data-m="apr" onclick="setMonth('apr')">Apr 2026 <span class="mb">60</span></div>
+</div>
+
+<div class="sec-nav">
+  <div class="sec-tab active" data-s="production" onclick="setSec('production')">⛏ Production</div>
+  <div class="sec-tab" data-s="weather" onclick="setSec('weather')">🌧 Weather Impact</div>
+  <div class="sec-tab" data-s="compare" onclick="setSec('compare')">📊 Month Compare</div>
+  <div class="sec-tab" data-s="fuel" onclick="setSec('fuel')">⛽ Fuel (Solar)</div>
+  <div class="sec-tab" data-s="github" onclick="setSec('github')">🌐 GitHub Setup</div>
+</div>
+
+<div style="background:var(--s2);border-bottom:1px solid var(--border);padding:5px 24px;display:flex;align-items:center;justify-content:space-between;">
+  <div id="liveStatus" style="font-family:'Fira Code',monospace;font-size:10px;color:var(--amber)">⟳ Loading live data from Google Sheets...</div>
+  <button class="refresh-btn" onclick="fetchLiveData()" style="font-size:9px;padding:3px 8px">⟳ Refresh Data</button>
+</div>
+<div class="filters" id="filterBar">
+  <span class="fl">Driver</span>
+  <div class="chips" id="dChips"></div>
+  <div class="fdiv"></div>
+  <span class="fl">Unit</span>
+  <div class="chips" id="uChips"></div>
+</div>
+
+<div class="main">
+
+<!-- ══ PRODUCTION ══ -->
+<div class="view active" id="view-production">
+  <div class="kpi-row" id="kpiRow"></div>
+  <div class="g2 g2-main">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Daily Production + Rainfall</div><div class="cs" id="wxOverlayNote">Loading weather overlay from Open-Meteo...</div></div></div>
+      <div class="cw" style="height:240px"><canvas id="dailyChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Driver Share</div><div class="cs">Porsi tonase per pengemudi</div></div></div>
+      <div class="cw" style="height:240px"><canvas id="donutChart"></canvas></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Ritase / Driver</div><div class="cs">Jumlah trip</div></div></div>
+      <div class="cw" style="height:170px"><canvas id="dTripChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Tonase / Driver</div><div class="cs">Total ton</div></div></div>
+      <div class="cw" style="height:170px"><canvas id="dTonChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Revenue / Driver</div><div class="cs">Rp juta</div></div></div>
+      <div class="cw" style="height:170px"><canvas id="dRevChart"></canvas></div>
+    </div>
+  </div>
+  <div>
+    <div class="sec-h">Driver Performance</div>
+    <div class="dgrid" id="dCards"></div>
+  </div>
+  <div class="tw">
+    <div class="th">
+      <div><div class="ct">Trip Log</div><div class="cs"><span id="rowCount">139</span> records · 💧 = rainy day (≥5mm)</div></div>
+      <input class="tsrch" id="tblSrch" placeholder="Cari driver / unit / DO..." oninput="onSrch()">
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th onclick="srt('no')">No.</th>
+          <th onclick="srt('month')">Bln</th>
+          <th onclick="srt('date')">Tgl Dump</th>
+          <th onclick="srt('driver')">Driver</th>
+          <th onclick="srt('unit')">Unit</th>
+          <th onclick="srt('do_num')">DO</th>
+          <th onclick="srt('tonase')">Ton</th>
+          <th onclick="srt('rp_per_km_ton')">Rate</th>
+          <th onclick="srt('revenue')">Revenue</th>
+          <th>Rain</th>
+        </tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+    <div class="pgn"><div class="pi" id="pgInfo">—</div><div class="pbs"><button class="pb" id="bPrev" onclick="pg(-1)">← Prev</button><button class="pb" id="bNext" onclick="pg(1)">Next →</button></div></div>
+  </div>
+</div>
+
+<!-- ══ WEATHER ══ -->
+<div class="view" id="view-weather">
+  <div class="note-bar" id="wxLoadNote"><div class="spinner"></div> Fetching live weather from Open-Meteo (free API, no key) for Bayung Lencir...</div>
+
+  <div class="sec-h">Current Conditions — Bayung Lencir (-2.35°S, 104.27°E)</div>
+  <div class="wx-stat-grid" id="wxStats">
+    <div class="wx-stat"><div class="wx-stat-lbl">Temperature</div><div class="wx-stat-val" id="wxS-temp">—</div><div class="wx-stat-sub">°C · feels like —</div></div>
+    <div class="wx-stat"><div class="wx-stat-lbl">Precipitation Today</div><div class="wx-stat-val 
